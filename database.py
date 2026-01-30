@@ -302,14 +302,13 @@ def insert_user_with_id(user_id, username, password, role, full_name=None):
 
 def populate_users():
     print("\n--- Remplissage des utilisateurs (Étudiants, Profs, Scolarité) ---")
-    # Étudiants (260x)
+    # Étudiants 
     insert_user_with_id(2601, "zelmaymouni", "pass123", "etudiant", "Zakariae El Maymouni")
     insert_user_with_id(2602, "rsaidi", "pass123", "etudiant", "Romaissae Saidi")
     insert_user_with_id(2603, "fkastit", "pass123", "etudiant", "Fatima Zahrae Kastit")
     insert_user_with_id(2604, "myassine", "pass123", "etudiant", "Mohamed Yassine")
     insert_user_with_id(2605, "yassine", "pass123", "etudiant", "Yassine")
     
-    # Étudiants noms arabes
     noms_ar = [
         (2606, "ssalman", "Salma Salman"), (2607, "imad", "Imad"), (2608, "ayman", "Ayman"),
         (2609, "janat", "Janat"), (2610, "yassmine", "Yassmine"), (2611, "houda", "Houda"),
@@ -319,14 +318,14 @@ def populate_users():
     for uid, uname, full in noms_ar:
         insert_user_with_id(uid, uname, "pass123", "etudiant", full)
 
-    # Professeurs (220x)
+    # Professeurs 
     insert_user_with_id(2207, "skhalissa", "prof123", "enseignant", "Sanae Khali Issa")
     insert_user_with_id(2208, "obaida", "prof123", "enseignant", "Ouafae Baida")
     insert_user_with_id(2209, "mezzeyanni", "prof123", "enseignant", "Mustapha Ezzeyanni")
     insert_user_with_id(2210, "maitlkbir", "prof123", "enseignant", "Mohamed Ait Lkbir")
     insert_user_with_id(2211, "srachafi", "prof123", "enseignant", "Said Rachafi")
 
-    # Scolarité (200x)
+    # les admins 
     insert_user_with_id(2001, "mdiani", "admin123", "admin", "Mustapha Diani")
     insert_user_with_id(2002, "mjebilo", "admin123", "admin", "Mohamed Jebilo")
     insert_user_with_id(2003, "ibtissame", "admin123", "admin", "Ibtissame")
