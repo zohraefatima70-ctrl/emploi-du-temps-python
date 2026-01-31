@@ -18,35 +18,32 @@ class StudentController:
     
     def _get_student_group(self):
         """
-        Trouve le groupe de l'étudiant
-        NOTE: Solution simplifiée pour la démo
+        Trouve le groupe de l'étudiant via la table student_groups.
+        
+        Returns:
+            int or None: ID du groupe ou None si non trouvé
         """
         conn = getConnection()
         cursor = conn.cursor()
         
-        # Récupérer le nom de l'utilisateur
-        cursor.execute("SELECT username FROM users WHERE id = ?", (self.user_id,))
-        user = cursor.fetchone()
+        # Récupérer le groupe de l'étudiant via la table de liaison
+        cursor.execute("""
+            SELECT g.id 
+            FROM groups g
+            JOIN student_groups sg ON g.id = sg.group_id
+            WHERE sg.user_id = ? AND g.active = 1
+            LIMIT 1
+        """, (self.user_id,))
         
-        if not user:
-            conn.close()
-            return None
+        result = cursor.fetchone()
         
-        username = user['username']
-        
-        # Logique simple d'attribution
-        if "adurand" in username:  # Alice Durand
-            cursor.execute("SELECT id FROM groups WHERE name = 'L3_INFO_G1'")
-        elif "btessier" in username:  # Bruno Tessier
-            cursor.execute("SELECT id FROM groups WHERE name = 'L3_INFO_G2'")
-        else:
-            # Par défaut, premier groupe actif
+        # Fallback: si pas dans student_groups, prendre le premier groupe actif
+        if not result:
             cursor.execute("SELECT id FROM groups WHERE active = 1 LIMIT 1")
+            result = cursor.fetchone()
         
-        group = cursor.fetchone()
         conn.close()
-        
-        return group['id'] if group else None
+        return result['id'] if result else None
     
     def get_group_timetable(self):
         """

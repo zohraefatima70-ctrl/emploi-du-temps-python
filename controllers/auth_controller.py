@@ -1,8 +1,26 @@
+# -*- coding: utf-8 -*-
+"""
+Contrôleur d'Authentification
+
+Ce module gère l'authentification des utilisateurs dans le système.
+"""
+
 import bcrypt
-from database.db import getConnection
+from database import getConnection
 from models.user import User
 
+
 def login(username, password):
+    """
+    Authentifie un utilisateur avec son nom d'utilisateur et mot de passe.
+    
+    Args:
+        username (str): Nom d'utilisateur
+        password (str): Mot de passe en clair
+        
+    Returns:
+        User or None: Objet User si authentification réussie, None sinon
+    """
     conn = getConnection()
     cursor = conn.cursor()
 
@@ -15,14 +33,14 @@ def login(username, password):
     conn.close()
 
     if not row:
-        return None  # user غير موجود
+        return None  # Utilisateur non trouvé
 
     if not bcrypt.checkpw(password.encode("utf-8"), row["password"]):
-        return None  # password غلط
+        return None  # Mot de passe incorrect
 
-    # إنشاء User object
+    # Création de l'objet User
     user = User(
-        user_id=row["id"],
+        id=row["id"],
         username=row["username"],
         role=row["role"],
         full_name=row["full_name"]

@@ -172,6 +172,19 @@ def setup():
         );
     """)
 
+    # ------------------ RELATION ÉTUDIANTS ↔ GROUPES ------------------
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS student_groups (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER NOT NULL,
+            group_id INTEGER NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            UNIQUE(user_id, group_id),
+            FOREIGN KEY(user_id) REFERENCES users(id),
+            FOREIGN KEY(group_id) REFERENCES groups(id)
+        );
+    """)
+
     # ------------------ TRIGGERS POUR updated_at ------------------
     cursor.execute("""
         CREATE TRIGGER IF NOT EXISTS update_users_timestamp 
@@ -536,6 +549,67 @@ def populate_subject_instructors():
     
     print("--- Relations Matières ↔ Enseignants remplies correctement. ---")
 
+# --- RELATION ÉTUDIANTS ↔ GROUPES ---
+
+def insert_student_group(user_id, group_id):
+    """ Associe un étudiant à un groupe. """
+    conn = getConnection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            INSERT INTO student_groups (user_id, group_id)
+            VALUES (?, ?)
+        """, (user_id, group_id))
+        conn.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conn.close()
+
+def populate_student_groups():
+    """Assigne les étudiants à leurs groupes respectifs."""
+    print("\n--- Remplissage des relations Étudiants ↔ Groupes ---")
+    
+    # Récupérer les groupes
+    group_ad = get_id_by_name("groups", "name", "LST AD")
+    group_idai = get_id_by_name("groups", "name", "IDAI")
+    group_mipc = get_id_by_name("groups", "name", "MIPC")
+    group_ssd = get_id_by_name("groups", "name", "SSD")
+    
+    # Récupérer les étudiants par leur username
+    students_ad = ["zelmaymouni", "rsaidi", "fkastit", "myassine", "yassine"]
+    students_idai = ["ssalman", "imad", "ayman"]
+    students_mipc = ["janat", "yassmine", "houda"]
+    students_ssd = ["badar", "houssam", "ilyas", "hajar"]
+    
+    # Assigner les étudiants aux groupes
+    for username in students_ad:
+        user_id = get_user_id_by_username(username)
+        if user_id and group_ad:
+            insert_student_group(user_id, group_ad)
+            print(f"Étudiant {username} -> LST AD")
+    
+    for username in students_idai:
+        user_id = get_user_id_by_username(username)
+        if user_id and group_idai:
+            insert_student_group(user_id, group_idai)
+            print(f"Étudiant {username} -> IDAI")
+    
+    for username in students_mipc:
+        user_id = get_user_id_by_username(username)
+        if user_id and group_mipc:
+            insert_student_group(user_id, group_mipc)
+            print(f"Étudiant {username} -> MIPC")
+    
+    for username in students_ssd:
+        user_id = get_user_id_by_username(username)
+        if user_id and group_ssd:
+            insert_student_group(user_id, group_ssd)
+            print(f"Étudiant {username} -> SSD")
+    
+    print("--- Relations Étudiants ↔ Groupes remplies correctement. ---")
+
 # --- FONCTION CRITIQUE : VÉRIFICATION DE CONFLIT D'HORAIRE ---
 
 def check_conflict(instructor_id, group_id, room_id, day, start_hour, duration):
@@ -695,9 +769,10 @@ def main():
     Fonction principale pour initialiser la BD et la remplir avec toutes les données de démonstration.
     """
     # Optionnel: Supprimer l'ancienne BD pour repartir de zéro à chaque exécution
-    if os.path.exists(DB_NAME):
-        os.remove(DB_NAME)
-        print(f"Ancien fichier {DB_NAME} supprimé.")
+    # Optionnel: Supprimer l'ancienne BD pour repartir de zéro à chaque exécution
+    # if os.path.exists(DB_NAME):
+    #    os.remove(DB_NAME)
+    #    print(f"Ancien fichier {DB_NAME} supprimé.")
 
     # 1. Initialisation (Création des tables et Admin)
     setup() 
@@ -712,6 +787,7 @@ def main():
     # 3. Remplissage des tables de relations 
     populate_subject_groups()
     populate_subject_instructors()
+    populate_student_groups()  # Association étudiants -> groupes
     
     # 4. Remplissage de l'Emploi du Temps (inclut désormais la vérification des conflits)
     populate_timetable()

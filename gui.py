@@ -500,29 +500,151 @@ class AdminDashboard(DashboardFrame):
         ttk.Button(btn_box, text=" Rejeter la sélection", command=lambda: action(False), style="Delete.TButton").pack(side="left", padx=10)
 
     def show_export(self):
+        """Affiche la vue d'exportation des données avec le nouveau bouton"""
         self.clear_content()
-        tk.Label(self.content_area, text="Exporter les données", font=("Segoe UI", 18, "bold")).pack(anchor="w", pady=(0, 20))
-        f = tk.Frame(self.content_area, bg=WHITE, padx=30, pady=30, relief="solid", borderwidth=1)
-        f.pack(fill="x")
-        
-        tk.Label(f, text="Télécharger les rapports :", bg=WHITE, font=("Segoe UI", 12)).pack(anchor="w", pady=(0, 15))
-        
-        def export_pdf():
-            try:
-                self.controller.exporter_statistiques_pdf("statistiques_salles.pdf")
-                messagebox.showinfo("Exportation réussie", "Le fichier PDF a été généré : statistiques_salles.pdf")
-            except Exception as e:
-                messagebox.showerror("Erreur Export", str(e))
 
-        def export_excel():
-            try:
-                self.controller.exporter_statistiques_excel("statistiques_salles.xlsx")
-                messagebox.showinfo("Exportation réussie", "Le fichier Excel a été généré : statistiques_salles.xlsx")
-            except Exception as e:
-                messagebox.showerror("Erreur Export", str(e))
+        # Titre principal
+        title = tk.Label(
+            self.content_area,
+            text="Exporter les données",
+            font=("Arial", 18, "bold"),
+            bg=BG_COLOR,
+            fg=TEXT_COLOR
+        )
+        title.pack(pady=(20, 10), padx=20, anchor="w")
 
-        ttk.Button(f, text="📄 Exporter Statistiques en PDF", command=export_pdf).pack(fill="x", pady=10)
-        ttk.Button(f, text="📊 Exporter Statistiques en Excel", command=export_excel).pack(fill="x", pady=10)
+        # Conteneur principal
+        export_frame = tk.Frame(
+            self.content_area,
+            bg=WHITE,
+            highlightthickness=1,
+            highlightbackground="#ccc",
+            bd=0
+        )
+        export_frame.pack(pady=20, padx=20, fill="both", expand=True)
+
+        tk.Label(
+            export_frame,
+            text="Télécharger les rapports :",
+            bg=WHITE,
+            font=("Arial", 11)
+        ).pack(pady=(20, 10), padx=20, anchor="w")
+
+        # --- BOUTON 1: PLANNING OFFICIEL ---
+        btn_planning = tk.Button(
+            export_frame,
+            text="📄 Exporter l'Emploi du Temps par Filière (PDF)",
+            bg=ACCENT_COLOR,
+            fg=WHITE,
+            font=("Arial", 10, "bold"),
+            relief="flat",
+            cursor="hand2",
+            height=2,
+            command=self.prompt_filiere_export
+        )
+        btn_planning.pack(pady=10, padx=40, fill="x")
+
+        # --- BOUTON 2: EDT EXCEL ---
+        btn_planning_excel = tk.Button(
+            export_frame,
+            text="📊 Exporter l'Emploi du Temps par Filière (Excel)",
+            bg="#27ae60",
+            fg=WHITE,
+            font=("Arial", 10, "bold"),
+            relief="flat",
+            cursor="hand2",
+            height=2,
+            command=self.prompt_filiere_export_excel
+        )
+        btn_planning_excel.pack(pady=10, padx=40, fill="x")
+
+        # --- BOUTON 3: EDT IMAGE ---
+        btn_planning_image = tk.Button(
+            export_frame,
+            text="🖼️ Exporter l'Emploi du Temps par Filière (Image PNG)",
+            bg="#9b59b6",
+            fg=WHITE,
+            font=("Arial", 10, "bold"),
+            relief="flat",
+            cursor="hand2",
+            height=2,
+            command=self.prompt_filiere_export_image
+        )
+        btn_planning_image.pack(pady=10, padx=40, fill="x")
+
+        # Séparateur
+        ttk.Separator(export_frame, orient='horizontal').pack(fill='x', pady=20, padx=20)
+        
+        tk.Label(
+            export_frame,
+            text="Statistiques générales :",
+            bg=WHITE,
+            font=("Arial", 11, "bold")
+        ).pack(pady=(0, 10), padx=20, anchor="w")
+
+        # --- BOUTON 4: STATISTIQUES PDF ---
+        btn_pdf = tk.Button(
+            export_frame,
+            text="📄 Exporter Statistiques en PDF",
+            bg=ACCENT_COLOR,
+            fg=WHITE,
+            font=("Arial", 10, "bold"),
+            relief="flat",
+            cursor="hand2",
+            height=2,
+            command=lambda: self.controller.exporter_statistiques_pdf()
+        )
+        btn_pdf.pack(pady=10, padx=40, fill="x")
+
+        # --- BOUTON 5: STATISTIQUES EXCEL ---
+        btn_excel = tk.Button(
+            export_frame,
+            text="📊 Exporter Statistiques en Excel",
+            bg=ACCENT_COLOR,
+            fg=WHITE,
+            font=("Arial", 10, "bold"),
+            relief="flat",
+            cursor="hand2",
+            height=2,
+            command=lambda: self.controller.exporter_statistiques_excel()
+        )
+        btn_excel.pack(pady=10, padx=40, fill="x")
+
+    def prompt_filiere_export(self):
+        """Affiche une boîte de dialogue pour exporter en PDF"""
+        from tkinter import simpledialog
+        filiere = simpledialog.askstring("Export PDF", "Entrez le nom de la filière (ex: LST AD, IDAI, SSD, MID) :")
+        if filiere:
+            try:
+                filename = f"Planning_{filiere.replace(' ', '_')}.pdf"
+                result = self.controller.exporter_planning_filiere_pdf(filiere, filename)
+                messagebox.showinfo("Succès", f"Le planning de la filière {filiere} a été généré !\n{result}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'exportation : {str(e)}")
+
+    def prompt_filiere_export_excel(self):
+        """Affiche une boîte de dialogue pour exporter en Excel"""
+        from tkinter import simpledialog
+        filiere = simpledialog.askstring("Export Excel", "Entrez le nom de la filière (ex: LST AD, IDAI, SSD, MID) :")
+        if filiere:
+            try:
+                filename = f"Planning_{filiere.replace(' ', '_')}.xlsx"
+                result = self.controller.exporter_planning_filiere_excel(filiere, filename)
+                messagebox.showinfo("Succès", f"Le planning Excel de la filière {filiere} a été généré !\n{result}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'exportation : {str(e)}")
+
+    def prompt_filiere_export_image(self):
+        """Affiche une boîte de dialogue pour exporter en Image"""
+        from tkinter import simpledialog
+        filiere = simpledialog.askstring("Export Image", "Entrez le nom de la filière (ex: LST AD, IDAI, SSD, MID) :")
+        if filiere:
+            try:
+                filename = f"Planning_{filiere.replace(' ', '_')}.png"
+                result = self.controller.exporter_planning_filiere_image(filiere, filename)
+                messagebox.showinfo("Succès", f"L'image du planning de la filière {filiere} a été générée !\n{result}")
+            except Exception as e:
+                messagebox.showerror("Erreur", f"Erreur lors de l'exportation : {str(e)}")
 
 # --- TEACHER DASHBOARD ---
 class TeacherDashboard(DashboardFrame):
