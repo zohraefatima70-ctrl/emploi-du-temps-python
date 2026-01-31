@@ -379,8 +379,8 @@ def insert_timetable_fst():
         # 09h00-10h30: Machine Learning CM (Amphi)
         (sub_ml, prof_sanae, grp_ad, amphi1, 1, 9, 2),
         # 10h45-12h15: Structure des Données TD
-        (sub_struct, prof_ezzey, grp_ad_g1, b01, 1, 10, 2),
-        (sub_struct, prof_ezzey, grp_ad_g2, b02, 1, 10, 2),
+        (sub_struct, prof_ezzey, grp_ad_g1, b01, 1, 11, 2),
+        (sub_struct, prof_ezzey, grp_ad_g2, b02, 1, 11, 2),
         # 14h15-15h45: Bases de Données TP
         (sub_bd, prof_ouafae, grp_ad_g1, e10, 1, 14, 2),
         (sub_bd, prof_ouafae, grp_ad_g2, e11, 1, 14, 2),
@@ -390,7 +390,7 @@ def insert_timetable_fst():
         (sub_py, prof_lahlou, grp_ad_g1, e10, 2, 9, 2),
         (sub_py, prof_lahlou, grp_ad_g2, e11, 2, 9, 2),
         # 10h45-12h15: Big Data CM
-        (sub_bigdata, prof_sanae, grp_ad, amphi2, 2, 10, 2),
+        (sub_bigdata, prof_sanae, grp_ad, amphi2, 2, 11, 2),
         # 14h15-15h45: Développement Web TP
         (sub_web, prof_ezzey, grp_ad_g1, e12, 2, 14, 2),
         
@@ -399,13 +399,13 @@ def insert_timetable_fst():
         (sub_ml, prof_sanae, grp_ad_g1, e10, 3, 9, 2),
         (sub_ml, prof_sanae, grp_ad_g2, e11, 3, 9, 2),
         # 10h45-12h15: Anglais
-        (sub_anglais, prof_benali, grp_ad, c01, 3, 10, 2),
+        (sub_anglais, prof_benali, grp_ad, c01, 3, 11, 2),
         
         # === JEUDI ===
         # 09h00-10h30: Structure Données CM
         (sub_struct, prof_ezzey, grp_ad, amphi1, 4, 9, 2),
         # 10h45-12h15: Bases de Données CM
-        (sub_bd, prof_ouafae, grp_ad, amphi1, 4, 10, 2),
+        (sub_bd, prof_ouafae, grp_ad, amphi1, 4, 11, 2),
         # 14h15-15h45: Python TP (suite)
         (sub_py, prof_lahlou, grp_ad_g2, e10, 4, 14, 2),
         
@@ -413,7 +413,7 @@ def insert_timetable_fst():
         # 09h00-10h30: Communication
         (sub_comm, prof_benali, grp_ad, c01, 5, 9, 2),
         # 10h45-12h15: Développement Web CM
-        (sub_web, prof_ezzey, grp_ad, amphi2, 5, 10, 2),
+        (sub_web, prof_ezzey, grp_ad, amphi2, 5, 11, 2),
         # 15h00-16h30: Big Data TP (Vendredi après-midi commence à 15h)
         (sub_bigdata, prof_sanae, grp_ad_g1, e10, 5, 15, 2),
         
